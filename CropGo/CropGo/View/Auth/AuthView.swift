@@ -33,6 +33,7 @@ struct LoginView: View {
                 Text("CropGo")
                     .font(.title)
                     .fontWeight(.black)
+                    .foregroundColor(.black)
             }.padding(.top, 25)
             Text("Sign In")
                 .font(.title2)
@@ -57,6 +58,7 @@ struct LoginView: View {
             
             VStack{
                 Text("Still not growing smart?")
+                    .foregroundColor(.black)
                 Button(action: {
                     register = true
                 }){
@@ -67,6 +69,7 @@ struct LoginView: View {
             }
             Spacer()
         }
+        .background(.white)
     }
 }
 
@@ -110,6 +113,7 @@ struct RegisterView: View {
             
             VStack{
                 Text("Already have an account?")
+                    .foregroundColor(.black)
                 Button(action: {
                     register = false
                 }){
@@ -119,6 +123,7 @@ struct RegisterView: View {
                 }            }
             Spacer()
         }
+        .background(.white)
     }
 }
 
