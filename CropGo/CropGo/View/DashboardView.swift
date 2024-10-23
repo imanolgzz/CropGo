@@ -41,25 +41,10 @@ struct DashboardView: View {
                 VStack{
                     TaskCard(title:"Irrigation",date:"Nov 20",iconName: "leaf.fill", color:.gray)
                 }
-                padding(.horizontal)
+                .padding(.horizontal)
             }
             .padding(.vertical)
             Spacer()
-            
-            //barra de navegación inferior
-            HStack{
-                Spacer()
-                NavigationIcon(systemName:"house.fill")
-                Spacer()
-                NavigationIcon(systemName: "chart.pie.fill")
-                Spacer()
-                NavigationIcon(systemName:"checkmark.square.fill")
-                Spacer()
-                NavigationIcon(systemName:"gearshape.fill")
-                Spacer()
-            }
-            .padding()
-            .background(Color.gray.opacity(0.1))
         }
     }
 }
