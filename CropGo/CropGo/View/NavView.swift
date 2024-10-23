@@ -15,11 +15,11 @@ struct NavView: View {
             .frame(height: 1) // Grosor de la líne
         
         HStack(alignment: .center, spacing: 56){
-            TabIcon(selected: $selectedTab, icon: "house.fill", tab: 1)
-            TabIcon(selected: $selectedTab, icon: "pencil.and.list.clipboard", tab: 2)
-            TabIcon(selected: $selectedTab, icon: "tree", tab: 3)
-            TabIcon(selected: $selectedTab, icon: "gearshape.fill", tab: 4)
-        }.padding(12)
+            TabIcon(selected: $selectedTab, icon: "house.fill", iconAlt: "house", tab: 1)
+            TabIcon(selected: $selectedTab, icon: "doc.text.below.ecg.fill", iconAlt: "doc.text.below.ecg", tab: 2, widthIcon: 32)
+            TabIcon(selected: $selectedTab, icon: "tree.fill", iconAlt: "tree", tab: 3)
+            TabIcon(selected: $selectedTab, icon: "gearshape.fill", iconAlt: "gearshape", tab: 4)
+        }.padding(10)
     }
     
 }
@@ -27,16 +27,18 @@ struct NavView: View {
 struct TabIcon : View {
     @Binding var selected: Int
     var icon: String
+    var iconAlt: String
     var tab: Int
+    var widthIcon: CGFloat? = nil
     var body: some View {
         Button(action: {
             selected = tab
             print(tab)
         }){
-            Image(systemName: icon)
+            Image(systemName: (selected == tab ? icon : iconAlt))
                 .resizable()
-                .frame(width: 37, height: 37)
-                .foregroundColor(selected == tab ? .blue : .black)
+                .frame(width: (widthIcon != nil ? widthIcon : 37), height: 37)
+                .foregroundColor(.black)
         }
 
 
