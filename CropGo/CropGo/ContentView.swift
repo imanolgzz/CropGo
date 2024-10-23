@@ -15,15 +15,15 @@ struct ContentView: View {
         if isAuth {
             switch selectedTab {
                 case 1:
-                    Text("Tab 1")
+                    HomeView()
                 case 2:
-                    Text("Tab 2")
+                    DashboardView()
                 case 3:
-                    Text("Tab 3")
+                    ManageView()
                 case 4:
-                    Text("Tab 4")
+                    SettingsView()
                 default:
-                    Text("No tab")
+                    Text("Tab not found")
             }
             Spacer()
             NavView(selectedTab: $selectedTab)
