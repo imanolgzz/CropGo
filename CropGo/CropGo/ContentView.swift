@@ -17,16 +17,16 @@ struct ContentView: View {
             switch selectedTab {
                 case 1:
                     HomeView()
-                    .offset(x: 0, y: -7.2)
+                        .offset(x: 0, y: -7.2)
                 case 2:
                     DashboardView()
-                    .offset(x: 0, y: -7.2)
+                        .offset(x: 0, y: -7.2)
                 case 3:
                     ManageView()
-                    .offset(x: 0, y: -7.2)
+                        .offset(x: 0, y: -7.2)
                 case 4:
                     SettingsView()
-                    .offset(x: 0, y: -7.2)
+                        .offset(x: 0, y: -7.2)
                 default:
                     Text("Tab not found")
             }
