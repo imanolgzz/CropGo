@@ -44,6 +44,23 @@ struct HomeView: View {
                 }
             }
 
+            
+            Text("Water Infrastructure")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.top, 20)
+            
+            Image("waterGraph")
+                .padding()
+            
+            Text("Mapa de Aspersores")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.top, 20)
+
+            Image("aspersores")
+                .padding()
+            
         }.padding(0)
             .background(Color(red:230/255, green:230/255, blue:230/255))
     }
