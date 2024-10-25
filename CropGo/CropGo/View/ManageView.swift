@@ -6,60 +6,64 @@
 //
 
 import SwiftUI
-import GoogleMaps
 
 struct ManageView: View {
-    @StateObject private var viewModel = AddCropViewModel()
+    @StateObject private var viewModel = AddCropViewModel() // StateObject to manage crops
 
     var body: some View {
-        VStack {
-            Text("Manage My Crops")
-                .font(.largeTitle)
-                .padding()
-
-            // Picker to select crop type
-            Picker("Select Crop Type", selection: $viewModel.selectedCropType) {
-                ForEach(CropType.allCases, id: \.self) { type in
-                    Text(type.rawValue)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding()
-
-            // MapView where users can tap to add points
-            MapView(viewModel: viewModel)
-                .frame(height: 400)
-
-            // Button to save the crop (only enabled when polygon is valid)
-            Button(action: {
-                viewModel.addCrop()
-            }) {
-                Text("Save Crop")
+        NavigationStack {
+            VStack {
+                Text("Manage My Crops")
+                    .font(.largeTitle)
                     .padding()
-                    .background(viewModel.isValidPolygon() ? Color.green : Color.gray)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .disabled(!viewModel.isValidPolygon()) // Disable if not enough points
-            .padding()
 
-            // List of crops
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(viewModel.crops) { crop in
-                        VStack {
-                            Text(crop.name)
-                                .font(.headline)
-                        }
+                if viewModel.crops.isEmpty {
+                    Text("No crops to show.")
+                        .font(.title2)
                         .padding()
+
+                    // Navigate to AddCropView, passing the shared viewModel
+                    NavigationLink(destination: AddCropView(viewModel: viewModel)) {
+                        Text("Add Crop")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
                     }
+                    .padding()
+                } else {
+                    // Show the map with saved crops (read-only, no adding/editing allowed)
+                    MapView(viewModel: viewModel, isInteractive: false)  // Set isInteractive to false
+                        .frame(height: 400)
+
+                    // List the crops below the map
+                    ScrollView(.horizontal) {
+                        HStack {
+                            ForEach(viewModel.crops) { crop in
+                                VStack {
+                                    Text(crop.name)
+                                        .font(.headline)
+                                    Image(crop.name) // Replace with actual images
+                                        .resizable()
+                                        .frame(width: 100, height: 100)
+                                }
+                                .padding()
+                            }
+                        }
+                    }
+
+                    // Button to navigate to AddCropView
+                    NavigationLink(destination: AddCropView(viewModel: viewModel)) {
+                        Text("Add Crop")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .padding()
                 }
             }
+            .padding()
         }
-        .padding()
     }
-}
-
-#Preview {
-    ManageView()
 }

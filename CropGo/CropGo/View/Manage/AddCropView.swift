@@ -9,22 +9,50 @@ import SwiftUI
 
 struct AddCropView: View {
     @ObservedObject var viewModel: AddCropViewModel
+    @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         VStack {
-            // Picker for selecting the crop type
-            Picker("Select Crop Type", selection: $viewModel.selectedCropType) {
-                ForEach(CropType.allCases, id: \.self) { type in
-                    Text(type.rawValue)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle()) // Optional styling
+            Text("Add a Crop")
+                .font(.largeTitle)
+                .padding()
 
-            // Save button
-            Button(action: {
-                if viewModel.isValidPolygon() {
-                    viewModel.addCrop() // Assuming there's an `addCrop` function in your ViewModel
+            // Scrollable area for the list and map
+            ScrollView {
+                VStack(spacing: 10) {
+                    // Crop selection list
+                    ForEach(CropType.allCases, id: \.self) { cropType in
+                        HStack {
+                            Image(cropType.rawValue) // Ensure image assets are correct
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .padding(.leading, 10)
+
+                            Text(cropType.rawValue)
+                                .font(.headline)
+                                .padding(.leading, 10)
+
+                            Spacer() // Push everything to the left
+                        }
+                        .padding()
+                        .background(viewModel.selectedCropType == cropType ? Color.blue.opacity(0.3) : Color.clear) // Highlight selected crop
+                        .cornerRadius(10)
+                        .onTapGesture {
+                            viewModel.selectedCropType = cropType
+                        }
+                    }
+
+                    // Map view to add points (interactive map)
+                    MapView(viewModel: viewModel, isInteractive: true)  // Set isInteractive to true
+                        .frame(height: 300)
+                        .padding()
                 }
+                .padding()
+            }
+
+            Button(action: {
+                viewModel.addCrop()
+                presentationMode.wrappedValue.dismiss() // This dismisses the view and goes back to ManageView
             }) {
                 Text("Save Crop")
                     .padding()
@@ -32,7 +60,8 @@ struct AddCropView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
-            .padding()
+            .disabled(!viewModel.isValidPolygon())
+            
         }
         .padding()
     }

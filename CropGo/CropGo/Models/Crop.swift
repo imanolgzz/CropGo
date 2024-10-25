@@ -8,11 +8,11 @@
 import Foundation
 import CoreLocation
 
-// Model for a Crop with a name and a polygon (location)
 struct Crop: Identifiable {
-    let id = UUID()
-    let name: String
-    let location: [CLLocationCoordinate2D] // Polygon points
+    var id = UUID()  // Unique identifier for the crop
+    var name: String  // Name of the crop
+    var type: CropType  // Type of the crop (this is what we'll use for color)
+    var location: [CLLocationCoordinate2D]  // Location points of the crop
 }
 
 // Enum for crop types
