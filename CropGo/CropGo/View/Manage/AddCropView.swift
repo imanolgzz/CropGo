@@ -7,52 +7,52 @@
 
 import SwiftUI
 
-import GoogleMaps
-
 struct AddCropView: View {
     @ObservedObject var viewModel: AddCropViewModel
-    
-    @State private var showingMap = false
-    
+    @Environment(\.presentationMode) var presentationMode
+
     var body: some View {
         VStack {
             Text("Add a Crop")
                 .font(.largeTitle)
                 .padding()
-            
-            // Picker for selecting the crop type
-            Picker("Select Crop Type", selection: $viewModel.selectedCropType) {
-                ForEach(CropType.allCases, id: \.self) { type in
-                    Text(type.rawValue)
+
+            // Scrollable area for the list and map
+            ScrollView {
+                VStack(spacing: 10) {
+                    // Crop selection list
+                    ForEach(CropType.allCases, id: \.self) { cropType in
+                        HStack {
+                            Image(cropType.rawValue) // Ensure image assets are correct
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .padding(.leading, 10)
+
+                            Text(cropType.rawValue)
+                                .font(.headline)
+                                .padding(.leading, 10)
+
+                            Spacer() // Push everything to the left
+                        }
+                        .padding()
+                        .background(viewModel.selectedCropType == cropType ? Color.blue.opacity(0.3) : Color.clear) // Highlight selected crop
+                        .cornerRadius(10)
+                        .onTapGesture {
+                            viewModel.selectedCropType = cropType
+                        }
+                    }
+
+                    // Map view to add points (interactive map)
+                    MapView(viewModel: viewModel, isInteractive: true)  // Set isInteractive to true
+                        .frame(height: 300)
+                        .padding()
                 }
+                .padding()
             }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding()
-            
-            // Button to launch the map for polygon selection
+
             Button(action: {
-                showingMap.toggle()
-            }) {
-                Text("Select Crop Location")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(8)
-            }
-            .sheet(isPresented: $showingMap) {
-                // MapView for selecting polygon points
-                CropLocationMapView(viewModel: viewModel)
-            }
-            
-            Spacer()
-            
-            // Save the crop
-            Button(action: {
-                if viewModel.isValidPolygon() {
-                    viewModel.addCrop()
-                } else {
-                    // Handle error: Not enough points
-                }
+                viewModel.addCrop()
+                presentationMode.wrappedValue.dismiss() // This dismisses the view and goes back to ManageView
             }) {
                 Text("Save Crop")
                     .padding()
@@ -60,6 +60,8 @@ struct AddCropView: View {
                     .foregroundColor(.white)
                     .cornerRadius(8)
             }
+            .disabled(!viewModel.isValidPolygon())
+            
         }
         .padding()
     }
