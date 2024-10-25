@@ -9,18 +9,27 @@ import SwiftUI
 import GoogleMaps
 
 struct MapView: UIViewRepresentable {
-    var crops: [Crop]
+    @ObservedObject var viewModel: AddCropViewModel
 
-    // Coordinator to handle interaction with the GMSMapView
+    // Coordinator to handle interaction with the map
     class Coordinator: NSObject, GMSMapViewDelegate {
         var parent: MapView
 
         init(parent: MapView) {
             self.parent = parent
         }
+
+        // Handle map tap to add points
+        func mapView(_ mapView: GMSMapView, didTapAt coordinate: CLLocationCoordinate2D) {
+            parent.viewModel.addPointToPolygon(coordinate)
+            parent.updateMap(mapView)
+        }
     }
 
-    // Create the Google Map view
+    func makeCoordinator() -> Coordinator {
+        Coordinator(parent: self)
+    }
+
     func makeUIView(context: Context) -> GMSMapView {
         let camera = GMSCameraPosition.camera(withLatitude: 37.7749, longitude: -122.4194, zoom: 12.0)
         let mapView = GMSMapView.map(withFrame: CGRect.zero, camera: camera)
@@ -28,27 +37,31 @@ struct MapView: UIViewRepresentable {
         return mapView
     }
 
-    // Update the map view
     func updateUIView(_ uiView: GMSMapView, context: Context) {
-        // Clear previous polygons
-        uiView.clear()
-
-        // Loop through crops and add polygons for each
-        for crop in crops {
-            let path = GMSMutablePath()
-            for coordinate in crop.location {
-                path.add(coordinate)
-            }
-            
-            let polygon = GMSPolygon(path: path)
-            polygon.fillColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.3) // Light green fill
-            polygon.strokeColor = UIColor.green // Green border
-            polygon.strokeWidth = 2
-            polygon.map = uiView
-        }
+        updateMap(uiView)
     }
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
+    // Update map and draw polygon
+    func updateMap(_ mapView: GMSMapView) {
+        mapView.clear()
+
+        // Draw the polygon when there are 4 or more points
+        if viewModel.currentPolygon.count >= 4 {
+            let path = GMSMutablePath()
+            for point in viewModel.currentPolygon {
+                path.add(point)
+            }
+            let polygon = GMSPolygon(path: path)
+            polygon.fillColor = UIColor(red: 0, green: 1, blue: 0, alpha: 0.2)
+            polygon.strokeColor = UIColor.green
+            polygon.strokeWidth = 2
+            polygon.map = mapView
+        }
+
+        // Add markers for each point
+        for point in viewModel.currentPolygon {
+            let marker = GMSMarker(position: point)
+            marker.map = mapView
+        }
     }
 }

@@ -8,17 +8,16 @@
 import Foundation
 import CoreLocation
 
-// Model for the Crop
+// Model for a Crop with a name and a polygon (location)
 struct Crop: Identifiable {
     let id = UUID()
     let name: String
-    let location: [CLLocationCoordinate2D] // Polygon coordinates to define the crop area
+    let location: [CLLocationCoordinate2D] // Polygon points
 }
 
-// Enum to represent different types of crops
+// Enum for crop types
 enum CropType: String, CaseIterable {
     case corn = "Corn"
     case lettuce = "Lettuce"
     case wheat = "Wheat"
-    // Add more crop types as needed
 }

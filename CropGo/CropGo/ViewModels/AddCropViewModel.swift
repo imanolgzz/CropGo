@@ -6,31 +6,33 @@
 //
 
 import Foundation
-import GoogleMaps
+import CoreLocation
+import SwiftUI
 
 class AddCropViewModel: ObservableObject {
-    @Published var crops: [Crop] = []
+    @Published var crops: [Crop] = [] // List of crops
     @Published var selectedCropType: CropType = .corn // Default crop type
-    @Published var currentPolygon: [CLLocationCoordinate2D] = [] // Holds the points for the polygon
-    
-    // Add a crop to the list of crops
+    @Published var currentPolygon: [CLLocationCoordinate2D] = [] // Points for crop area
+
+    // Add a crop
     func addCrop() {
         let newCrop = Crop(name: selectedCropType.rawValue, location: currentPolygon)
         crops.append(newCrop)
+        clearPolygon() // Reset polygon after adding crop
     }
 
-    // Check if enough points have been added
-    func isValidPolygon() -> Bool {
-        return currentPolygon.count >= 4
-    }
-
-    // Add a point to the polygon
+    // Add a point to the polygon (for defining the area)
     func addPointToPolygon(_ point: CLLocationCoordinate2D) {
         currentPolygon.append(point)
     }
-    
-    // Clear the polygon
+
+    // Clear the polygon points
     func clearPolygon() {
         currentPolygon.removeAll()
+    }
+
+    // Check if the polygon is valid (at least 4 points)
+    func isValidPolygon() -> Bool {
+        return currentPolygon.count >= 4
     }
 }
